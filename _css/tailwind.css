@@ -1,0 +1,6 @@
+/* tailwindのベーススタイルと、プラグインによって登録されたベーススタイルを挿入する */
+@tailwind base;
+/* tailwindのコンポーネントクラスとプラグインによって登録されたコンポーネントクラスを挿入する */
+@tailwind components;
+/* tailwindのユーティリティークラスとプラグインによって登録されたユーティリティークラスを挿入する */
+@tailwind utilities;
