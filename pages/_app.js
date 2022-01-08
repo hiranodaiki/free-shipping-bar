@@ -9,6 +9,8 @@ import "@shopify/polaris/dist/styles.css";
 import translations from "@shopify/polaris/locales/en.json";
 // tailwindcssのスタイルを展開
 import "../style/style.css"
+// アプリ管理画面のルーティング周りの設定用の自作モジュール
+import RoutePropagator from "../components/RoutePropagator";
 
 function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
@@ -63,6 +65,7 @@ class MyApp extends App {
             forceRedirect: true,
           }}
         >
+          <RoutePropagator/>
           <MyProvider Component={Component} {...pageProps} />
         </Provider>
       </AppProvider>
