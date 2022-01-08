@@ -6,6 +6,8 @@ import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
+// 請求画面にリダイレクトするために必要なモジュール
+import { createClient , getSubscriptionUrl } from "./handlers/index"
 
 dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 8081;
@@ -20,7 +22,7 @@ Shopify.Context.initialize({
   API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
   SCOPES: process.env.SCOPES.split(","),
   HOST_NAME: process.env.HOST.replace(/https:\/\/|\/$/g, ""),
-  API_VERSION: ApiVersion.October20,
+  API_VERSION: ApiVersion.October21, // 最新のGraphQL APIを使用するために、バージョンを2021-10をしています
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
   SESSION_STORAGE: new Shopify.Session.MemorySessionStorage(),
@@ -58,7 +60,11 @@ app.prepare().then(async () => {
         }
 
         // Redirect to app with shop parameter upon auth
-        ctx.redirect(`/?shop=${shop}&host=${host}`);
+        // ctx.redirect(`/?shop=${shop}&host=${host}`);
+
+        // 請求画面にリダイレクト
+        server.context.client = await createClient(shop,accessToken);
+        await getSubscriptionUrl(ctx,host,shop);
       },
     })
   );
