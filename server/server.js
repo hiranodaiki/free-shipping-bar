@@ -75,6 +75,30 @@ app.prepare().then(async () => {
     ctx.res.statusCode = 200;
   };
 
+  // クリックジャック対策
+  const setClickJackingHeadersMiddleware = async (ctx, next) => {
+    const shop = ctx.query.shop;
+    try {
+      if (shop) {
+        ctx.set({
+          "Content-Security-Policy": `frame-ancestors https://${shop} https://admin.shopify.com;`,
+        });
+        console.log(
+          "Set Content-Security-Policy to: ",
+          `frame-ancestors https://${shop} https://admin.shopify.com;`
+        );
+      } else {
+      }
+    } catch (err) {
+      console.log("Doesnt matter");
+    } finally {
+      return next();
+    }
+  };
+
+  router.use(setClickJackingHeadersMiddleware);
+
+  // カスタムサーバーのルーティング設定
   router.post("/webhooks", async (ctx) => {
     try {
       await Shopify.Webhooks.Registry.process(ctx.req, ctx.res);
