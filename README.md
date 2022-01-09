@@ -8,10 +8,17 @@ Shopify公開アプリを作成する場合は、このテンプレートをベ�
 テンプレートは、以下の手順に沿って使用してください。
 
 ### プロジェクトをテンプレートから始める
-githubから、テンプレートをcloneしてください。
+以下の手順で、ローカルにテンプレートを作成してください。
+
+1. プロジェクトディレクトリを作成する
+2. プロジェクトディレクトリに移動する
+3. `git init`を実行する
+4. `git pull git@github.com:UnReacts/shopify-app.git`を実行する
 
 ```
+mkdir your-project-directory
 cd your-project-directory
+git init
 git clone git@github.com:UnReacts/shopify-app.git
 ```
 
@@ -22,13 +29,17 @@ cd your-project-directory/shopify-app
 npm install
 ```
 
-### 変更を加える
-テンプレートに変更を加えて、あなたのアプリを実装してください。
+### あなたのリポジトリを作成する
+githubにて、あなたのアプリを管理するためのリポジトリを作成してください。
 
 ### pushする
 テンプレートを変更したら、以下のコマンドにより変更差分をgithubにプッシュしてください。
 
 ```
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin <リポジトリのURL>
 git push -u origin main
 ```
 
