@@ -39,28 +39,35 @@ git push -u origin main
 ├── LICENSE.md
 ├── README.md
 ├── SECURITY.md
-├── _css // tailwindのビルド元のファイル
+├── _css
 │   └── tailwind.css
-├── components // 自作コンポーネントの管理ディレクトリ
-│   └── RoutePropagator.js // アプリ管理画面のルーティングをnext/routerに変更するためのコンポーネント
-├── next.config.js // nextの設定ファイル
+├── next-env.d.ts
+├── next.config.js
+├── nodemon.json
 ├── package-lock.json
 ├── package.json
-├── pages // clientサイドの管理
-│   ├── _app.js
-│   └── index.js
-├── server // serverサイドの管理
+├── server
 │   ├── handlers
-│   │   ├── client.js
-│   │   ├── index.js
+│   │   ├── client.ts
+│   │   ├── index.ts
 │   │   └── mutations
-│   │       ├── get-one-time-url.js
-│   │       └── get-subscription-url.js
+│   │       ├── get-one-time-url.ts
+│   │       └── get-subscription-url.ts
 │   ├── index.js
-│   └── server.js
+│   └── server.ts
+├── src
+│   ├── components
+│   │   └── RoutePropagator.js
+│   ├── lib
+│   │   └── deeplink.ts
+│   └── pages
+│       ├── _app.js
+│       └── index.tsx
 ├── style
-│   └── style.css // _app.jsで読み込まれるグローバルcss
-└── tailwind.config.js
+│   └── style.css
+├── tailwind.config.js
+├── tsconfig.json
+└── tsconfig.server.json
 ```
 
 ## `theme-app-extension`を追加
