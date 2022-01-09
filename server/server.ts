@@ -10,6 +10,11 @@ import Router from "koa-router";
 import { createClient, getSubscriptionUrl } from "./handlers/index";
 import { receiveWebhook } from "@shopify/koa-shopify-webhooks";
 
+// ACTIVE_SHOPIFY_SHOPSのための型を定義する
+interface ActiveShopifyShops {
+  [key: string]: string;
+}
+
 dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 8081;
 const dev = process.env.NODE_ENV !== "production";
@@ -31,7 +36,7 @@ Shopify.Context.initialize({
 
 // Storing the currently active shops in memory will force them to re-login when your server restarts. You should
 // persist this object in your app.
-const ACTIVE_SHOPIFY_SHOPS = {};
+const ACTIVE_SHOPIFY_SHOPS: ActiveShopifyShops = {};
 
 // Shopifyからのウェブフックを検知するミドルウェア関数の作成
 const webhook = receiveWebhook({ secret: process.env.SHOPIFY_API_SECRET });
@@ -53,8 +58,9 @@ app.prepare().then(async () => {
           accessToken,
           path: "/webhooks",
           topic: "APP_UNINSTALLED",
-          webhookHandler: async (topic, shop, body) =>
-            delete ACTIVE_SHOPIFY_SHOPS[shop],
+          webhookHandler: async (topic, shop, body): Promise<void> =>{
+            delete ACTIVE_SHOPIFY_SHOPS[shop];
+          }
         });
 
         if (!response.success) {
@@ -136,7 +142,7 @@ app.prepare().then(async () => {
   router.get("(/_next/static/.*)", handleRequest); // Static content is clear
   router.get("/_next/webpack-hmr", handleRequest); // Webpack content is clear
   router.get("(.*)", async (ctx) => {
-    const shop = ctx.query.shop;
+    const shop = ctx.query.shop as string;
 
     // This shop hasn't been seen yet, go through OAuth to create a session
     if (ACTIVE_SHOPIFY_SHOPS[shop] === undefined) {

@@ -8,9 +8,9 @@ import { Redirect } from "@shopify/app-bridge/actions";
 import "@shopify/polaris/dist/styles.css";
 import translations from "@shopify/polaris/locales/en.json";
 // tailwindcssのスタイルを展開
-import "../style/style.css";
+import "root/style/style.css";
 // アプリ管理画面のルーティング周りの設定用の自作モジュール
-import RoutePropagator from "../components/RoutePropagator";
+import RoutePropagator from "@/components/RoutePropagator";
 // 請求が完了していない時に、請求画面にリダイレクトするための実装に必要なモジュール
 import { useRouter } from "next/router";
 import { gql } from "apollo-boost";

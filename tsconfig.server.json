@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json", // tsconfig.jsonの設定を継承する
+  "compilerOptions": {
+    "module": "commonjs", // 出力するモジュールの仕組み
+    "outDir": "dist", //　ビルドファイルの出力先
+    "target": "es2017", // 出力するjsのバージョン
+    "isolatedModules": false,
+    "noEmit": false // Next.jsはバベルを使用してコンパイルするらしいので、typescriptコンパイラはjsを出力しなくてもいいらしい
+  },
+  "include": ["server/**/*.ts"] // コンパイル対象となるファイル
+}

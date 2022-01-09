@@ -1,0 +1,34 @@
+{
+  "compilerOptions": { // コンパイルする際のオプション
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "root/*": ["./*"],
+    },
+    "target": "es6",//　出力するjsのバージョン
+    "lib": [ // 使用する際に使用する組み込みライブラリを指定する
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true, // trueの場合、.jsや.jsxもコンパイル対象になる
+    "skipLibCheck": true,
+    "strict": false, // strictモード
+    "forceConsistentCasingInFileNames": true, // import時ファイルパスの文字列を大文字、小文字で区別するかどうか
+    "noEmit": true, // trueの場合、コンパイル結果を出力しない
+    "esModuleInterop": true,
+    "module": "commonjs",//出力するモジュールの仕組みを指定
+    "moduleResolution": "node", // tscのモジュール解決方法を指定する
+    "resolveJsonModule": true,
+    "isolatedModules": true, // trueの場合、コンパイ対象のファイル間の関係性を無視して、全てのファイルを単一のモジュールとしてコンパイルするらしい
+    "jsx": "preserve" // tsxファイルをjsxやjsにコンパイルする際の出力形式を指定（preserve:babelにコンパイルをさせたい場合に指定するらしい）
+  },
+  "exclude": [ // コンパイル対象外のファイル(デフォルトでnode_modulesはコンパイル対象外らしいが、一応書いておく)
+    "node_modules"
+  ],
+  "include": [ // コンパイル対象のファイル(.tsと.tsxという拡張子を持つファイルをコンパイルする)
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
+}
