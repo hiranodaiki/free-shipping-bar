@@ -1,30 +1,100 @@
-# Shopify App Node
+## Shopify公開アプリのテンプレート
+Shopify公開アプリを作成する場合は、このテンプレートをベースに行ってください。
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
-[![Build Status](https://travis-ci.com/Shopify/shopify-app-node.svg?branch=master)](https://travis-ci.com/Shopify/shopify-app-node)
+### 環境
+ `package.json`を参照してください。
 
-Boilerplate to create an embedded Shopify app made with Node, [Next.js](https://nextjs.org/), [Shopify-koa-auth](https://github.com/Shopify/quilt/tree/master/packages/koa-shopify-auth), [Polaris](https://github.com/Shopify/polaris-react), and [App Bridge React](https://shopify.dev/tools/app-bridge/react-components).
+## テンプレートの使い方
+テンプレートは、以下の手順に沿って使用してください。
 
-## Installation
+### プロジェクトをテンプレートから始める
+githubから、テンプレートをcloneしてください。
 
-Using the [Shopify CLI](https://github.com/Shopify/shopify-cli) run:
-
-```sh
-~/ $ shopify node create -n APP_NAME
+```
+cd your-project-directory
+git clone git@github.com:UnReacts/shopify-app.git
 ```
 
-Or, fork and clone repo
+pullが完了したら、以下のコマンドにより必要なパッケージをインストールしてください。
 
-## Requirements
+```
+cd your-project-directory/shopify-app
+npm install
+```
 
-- If you don’t have one, [create a Shopify partner account](https://partners.shopify.com/signup).
-- If you don’t have one, [create a Development store](https://help.shopify.com/en/partners/dashboard/development-stores#create-a-development-store) where you can install and test your app.
-- In the Partner dashboard, [create a new app](https://help.shopify.com/en/api/tools/partner-dashboard/your-apps#create-a-new-app). You’ll need this app’s API credentials during the setup process.
+### 変更を加える
+テンプレートに変更を加えて、あなたのアプリを実装してください。
 
-## Usage
+### pushする
+テンプレートを変更したら、以下のコマンドにより変更差分をgithubにプッシュしてください。
 
-This repository is used by [Shopify CLI](https://github.com/Shopify/shopify-cli) as a scaffold for Node apps. You can clone or fork it yourself, but it’s faster and easier to use Shopify App CLI, which handles additional routine development tasks for you.
+```
+git push -u origin main
+```
 
-## License
+## ディレクトリ構造
 
-This respository is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+```
+.
+├── LICENSE.md
+├── README.md
+├── SECURITY.md
+├── _css // tailwindのビルド元のファイル
+│   └── tailwind.css
+├── components // 自作コンポーネントの管理ディレクトリ
+│   └── RoutePropagator.js // アプリ管理画面のルーティングをnext/routerに変更するためのコンポーネント
+├── next.config.js // nextの設定ファイル
+├── package-lock.json
+├── package.json
+├── pages // clientサイドの管理
+│   ├── _app.js
+│   └── index.js
+├── server // serverサイドの管理
+│   ├── handlers
+│   │   ├── client.js
+│   │   ├── index.js
+│   │   └── mutations
+│   │       ├── get-one-time-url.js
+│   │       └── get-subscription-url.js
+│   ├── index.js
+│   └── server.js
+├── style
+│   └── style.css // _app.jsで読み込まれるグローバルcss
+└── tailwind.config.js
+```
+
+## `theme-app-extension`を追加
+
+`theme-app-extension`を追加する場合は、テンプレートのディレクトリにて以下のコマンドを実行してください。
+
+```
+shopify extension create
+```
+
+あなたの公開アプリとテーマエクステンションを紐付ける。
+
+```
+cd theme-app-extension
+shopify extension register
+```
+
+上記のコマンドを実行すると、以下のメッセージが表示されるので、`y`をクリックして`enter`を押してください。
+
+```
+You can only create one Theme App Extension per app, which can’t be undone.
+┃   ? Would you like to register this extension? (y/n) (You chose: yes)
+```
+
+詳細については、以下の記事を参考にしてください。
+
+https://qiita.com/kohiki-junki/private/98f0d3e444f3d03c39ee
+
+## その他
+
+- [LICENSE.md](LICENSE.md)
+- [SECURITY.md](SECURITY.md)
+
+## 今後の展望
+
+- TS化する
+
