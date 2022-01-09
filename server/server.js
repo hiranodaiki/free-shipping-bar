@@ -7,7 +7,8 @@ import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
 // 請求画面にリダイレクトするために必要なモジュール
-import { createClient , getSubscriptionUrl } from "./handlers/index"
+import { createClient, getSubscriptionUrl } from "./handlers/index";
+import { receiveWebhook } from "@shopify/koa-shopify-webhooks";
 
 dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 8081;
@@ -31,6 +32,9 @@ Shopify.Context.initialize({
 // Storing the currently active shops in memory will force them to re-login when your server restarts. You should
 // persist this object in your app.
 const ACTIVE_SHOPIFY_SHOPS = {};
+
+// Shopifyからのウェブフックを検知するミドルウェア関数の作成
+const webhook = receiveWebhook({ secret: process.env.SHOPIFY_API_SECRET });
 
 app.prepare().then(async () => {
   const server = new Koa();
@@ -63,8 +67,8 @@ app.prepare().then(async () => {
         // ctx.redirect(`/?shop=${shop}&host=${host}`);
 
         // 請求画面にリダイレクト
-        server.context.client = await createClient(shop,accessToken);
-        await getSubscriptionUrl(ctx,host,shop);
+        server.context.client = await createClient(shop, accessToken);
+        await getSubscriptionUrl(ctx, host, shop);
       },
     })
   );
@@ -106,6 +110,19 @@ app.prepare().then(async () => {
     } catch (error) {
       console.log(`Failed to process webhook: ${error}`);
     }
+  });
+
+  // GDPR必須ウェブフックに対応
+  router.post(`/webhooks/customers/data_request`, webhook, async (ctx) => {
+    ctx.res.statusCode = 200;
+  });
+
+  router.post(`/webhooks/customers/redact`, webhook, async (ctx) => {
+    ctx.res.statusCode = 200;
+  });
+
+  router.post(`/webhooks/shop/redact`, webhook, async (ctx) => {
+    ctx.res.statusCode = 200;
   });
 
   router.post(
