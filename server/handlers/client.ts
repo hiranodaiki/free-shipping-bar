@@ -1,6 +1,11 @@
 import ApolloClient from "apollo-boost";
 
-export const createClient = (shop, accessToken) => {
+type CreateClient = (
+  shop: string,
+  accessToken: string
+) => ApolloClient<unknown>;
+
+export const createClient: CreateClient = (shop, accessToken) => {
   return new ApolloClient({
     uri: `https://${shop}/admin/api/2021-10/graphql.json`,
     request: (operation) => {
