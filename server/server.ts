@@ -11,8 +11,14 @@ import { createClient, getSubscriptionUrl } from "./handlers/index";
 import { receiveWebhook } from "@shopify/koa-shopify-webhooks";
 
 // ACTIVE_SHOPIFY_SHOPSのための型を定義する
-interface ActiveShopifyShops {
+type ActiveShopifyShops = {
   [key: string]: string;
+}
+
+type KoaDefaultContext = {
+  shop: string
+  accessToken: string
+  scope: string
 }
 
 dotenv.config();
@@ -49,7 +55,7 @@ app.prepare().then(async () => {
     createShopifyAuth({
       async afterAuth(ctx) {
         // Access token and shop available in ctx.state.shopify
-        const { shop, accessToken, scope } = ctx.state.shopify;
+        const { shop, accessToken, scope }: KoaDefaultContext = ctx.state.shopify;
         const host = ctx.query.host;
         ACTIVE_SHOPIFY_SHOPS[shop] = scope;
 
@@ -58,9 +64,9 @@ app.prepare().then(async () => {
           accessToken,
           path: "/webhooks",
           topic: "APP_UNINSTALLED",
-          webhookHandler: async (topic, shop, body): Promise<void> =>{
+          webhookHandler: async (topic, shop, body): Promise<void> => {
             delete ACTIVE_SHOPIFY_SHOPS[shop];
-          }
+          },
         });
 
         if (!response.success) {
@@ -73,20 +79,29 @@ app.prepare().then(async () => {
         // ctx.redirect(`/?shop=${shop}&host=${host}`);
 
         // 請求画面にリダイレクト
-        server.context.client = await createClient(shop, accessToken);
+        server.context.client = createClient(shop, accessToken);
         await getSubscriptionUrl(ctx, host, shop);
       },
     })
   );
 
-  const handleRequest = async (ctx) => {
+  const handleRequest = async (
+    ctx: Koa.ParameterizedContext<any, Router.IRouterParamContext<any, {}>, any>
+  ) => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
   };
 
   // クリックジャック対策
-  const setClickJackingHeadersMiddleware = async (ctx, next) => {
+  const setClickJackingHeadersMiddleware = async (
+    ctx: Koa.ParameterizedContext<
+      any,
+      Router.IRouterParamContext<any, {}>,
+      any
+    >,
+    next: Koa.Next
+  ): Promise<void> => {
     const shop = ctx.query.shop;
     try {
       if (shop) {
