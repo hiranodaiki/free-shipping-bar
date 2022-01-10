@@ -13,7 +13,9 @@ import "@/style/style.css";
 import RoutePropagator from "@/components/RoutePropagator";
 // 請求が完了していない時に、請求画面にリダイレクトするための実装に必要なモジュール
 import { useRouter } from "next/router";
-import { gql } from "apollo-boost";
+import { getSubscriptionUrl } from "@/lib/mutations/get-subscription-url";
+import { getSubscriptionStatus } from "@/lib/querys/get-subscription-status";
+import { useState } from "react";
 
 function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
@@ -38,70 +40,15 @@ function userLoggedInFetch(app) {
 }
 
 // サブスクリプションのstatusを取得するためのクエリ
-const GET_SUBSCRIPTION_STATUS = gql`
-  query {
-    currentAppInstallation {
-      activeSubscriptions {
-        createdAt
-        name
-        status
-        test
-        trialDays
-      }
-    }
-  }
-`;
 
 // 定期購読を作成するためのミューテーション(get-subscription-url.jsと一致させること)
-export function RECURRING_CREATE(url) {
-  return gql`
-    mutation {
-      appSubscriptionCreate(
-          name: "Input Your Plan Name"
-          returnUrl: "${url}"
-          test: true
-          lineItems: [
-          {
-            plan: {
-              appRecurringPricingDetails: {
-                  price: { amount: 10, currencyCode: USD }
-              }
-            }
-          }
-          ]
-        ) {
-            userErrors {
-              field
-              message
-            }
-            confirmationUrl
-            appSubscription {
-              id
-            }
-        }
-    }`;
-}
-
-// 請求画面にリダイレクトするためのURLを生成する関数
-export const getSubscriptionUrl = async (app, client, shop, host) => {
-  const redirectUrl = process.env.HOSTURL.replaceAll('"', "").concat(
-    `/?shop=${shop}&host=${host}`
-  );
-
-  // Billing APIを叩く
-  const confirmationUrl = await client
-    .mutate({
-      mutation: RECURRING_CREATE(redirectUrl),
-    })
-    .then((response) => {
-      return response.data.appSubscriptionCreate.confirmationUrl;
-    });
-  return confirmationUrl;
-};
 
 function MyProvider(props) {
   const app = useAppBridge();
   const router = useRouter();
+  const [isSubscriptionStateActive, setIsSubscriptionStatusActive] = useState(
+    false
+  );
 
   const client = new ApolloClient({
     fetch: userLoggedInFetch(app),
@@ -110,28 +57,24 @@ function MyProvider(props) {
     },
   });
 
-  client.query({ query: GET_SUBSCRIPTION_STATUS }).then((response) => {
-    if (
-      response.data.currentAppInstallation?.activeSubscriptions[0]?.status !=
-      "ACTIVE"
-    ) {
-      getSubscriptionUrl(
-        app,
-        client,
-        router.query.shop,
-        router.query.host
-      ).then((confirmationUrl) => {
+  getSubscriptionStatus(client).then((subscriptionStatus) => {
+    if (subscriptionStatus) {
+      setIsSubscriptionStatusActive(subscriptionStatus);
+      return;
+    }
+    getSubscriptionUrl(client, router.query.shop, router.query.host).then(
+      (confirmationUrl) => {
         const redirect = Redirect.create(app);
         redirect.dispatch(Redirect.Action.REMOTE, confirmationUrl);
-      });
-    }
+      }
+    );
   });
 
   const Component = props.Component;
 
   return (
     <ApolloProvider client={client}>
-      <Component {...props} />
+      {isSubscriptionStateActive&&<Component {...props} />}
     </ApolloProvider>
   );
 }
