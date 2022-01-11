@@ -1,4 +1,4 @@
-import {useEffect , useContext} from 'react';
+import React, {useEffect , useContext} from 'react';
 import Router, { useRouter } from "next/router";
 import { Context as AppBridgeContext } from "@shopify/app-bridge-react";
 import { Redirect } from "@shopify/app-bridge/actions";
@@ -18,7 +18,7 @@ const RoutePropagator = () => {
 
 // Shopifyのデフォルトのルーティングをnext.jsのルーティングに変える
   return appBridge && route ? (
-    <ShopifyRoutePropagator location={route} app={appBridge} />
+    <ShopifyRoutePropagator location={route} />
   ) : null;
 }
 
