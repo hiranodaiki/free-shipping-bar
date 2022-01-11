@@ -10,24 +10,14 @@ Shopify公開アプリを作成する場合は、このテンプレートをベ�
 ### プロジェクトをテンプレートから始める
 以下の手順で、ローカルにテンプレートを作成してください。
 
-1. プロジェクトディレクトリを作成する
-2. プロジェクトディレクトリに移動する
-3. `git init`を実行する
-4. `git pull git@github.com:UnReacts/shopify-app.git`を実行する
-
-```
-mkdir your-project-directory
-cd your-project-directory
-git init
-git clone git@github.com:UnReacts/shopify-app.git
-```
-
-pullが完了したら、以下のコマンドにより必要なパッケージをインストールしてください。
-
-```
-cd your-project-directory/shopify-app
-npm install
-```
+1. `shopify app create node`でアプリプロジェクトを作成します。
+2. `cd your-project-directory`であなたのアプリプロジェクトのディレクトリに移動します。
+3. `ls -a | grep -v -E '.env' | xargs rm -rf & rm -rf .env.example`を実行して必要ないファイルを削除します。
+4. `git init`を実行します。
+5. `git pull git@github.com:UnReacts/shopify-app.git`を実行して、このリポジトリのファイルをプルします。
+6. `npm install`を実行して、必要なパッケージをインストールします。
+7. `shopify app serve`を実行します。
+8. アプリの管理画面が開くことを確認してください。
 
 ### あなたのリポジトリを作成する
 githubにて、あなたのアプリを管理するためのリポジトリを作成してください。
@@ -111,8 +101,3 @@ https://qiita.com/kohiki-junki/private/98f0d3e444f3d03c39ee
 
 - [LICENSE.md](LICENSE.md)
 - [SECURITY.md](SECURITY.md)
-
-## 今後の展望
-
-- TS化する
-
