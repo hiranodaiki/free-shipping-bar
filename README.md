@@ -19,6 +19,16 @@ Shopify公開アプリを作成する場合は、このテンプレートをベ�
 7. `shopify app serve`を実行します。
 8. アプリの管理画面が開くことを確認してください。
 
+```
+shopify app create node
+cd your-project-direcory
+ls -a | grep -v -E '.env' | xargs rm -rf & rm -rf .env.example
+git init
+git pull git@github.com:UnReacts/shopify-app.git
+npm install
+shopify app serve
+```
+
 ### あなたのリポジトリを作成する
 githubにて、あなたのアプリを管理するためのリポジトリを作成してください。
 
