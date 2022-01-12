@@ -103,9 +103,9 @@ You can only create one Theme App Extension per app, which can’t be undone.
 ┃   ? Would you like to register this extension? (y/n) (You chose: yes)
 ```
 
-詳細については、以下の記事を参考にしてください。
-
-https://qiita.com/kohiki-junki/private/98f0d3e444f3d03c39ee
+## 参考記事
+1. [【仕様書】審査に通るShopify公開アプリを作成してみよう！](https://qiita.com/kohiki-junki/private/c2b3247a2f709bf77a18)
+2. [【Shopify App】Shopifyアプリ開発手順をまとめてみた](https://qiita.com/kohiki-junki/private/98f0d3e444f3d03c39ee)
 
 ## その他
 
