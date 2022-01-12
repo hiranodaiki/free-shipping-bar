@@ -7,7 +7,7 @@ import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
 // 請求画面にリダイレクトするために必要なモジュール
-import { createClient, getSubscriptionUrl } from "./handlers/index";
+import { createClient, getSubscriptionUrl , getShopPlanStatus } from "./handlers/index";
 import { receiveWebhook } from "@shopify/koa-shopify-webhooks";
 
 // ACTIVE_SHOPIFY_SHOPSのための型を定義する
@@ -75,11 +75,18 @@ app.prepare().then(async () => {
           );
         }
 
+        
         // Redirect to app with shop parameter upon auth
-        // ctx.redirect(`/?shop=${shop}&host=${host}`);
-
-        // 請求画面にリダイレクト
+        
         server.context.client = createClient(shop, accessToken);
+        const isDevelopmentStore = await getShopPlanStatus(ctx);
+        
+        // 開発ストアである場合、請求画面にリダイレクトしない
+        if (isDevelopmentStore) {
+          ctx.redirect(`/?shop=${shop}&host=${host}`);
+          return
+        }
+        // 請求画面にリダイレクト
         await getSubscriptionUrl(ctx, host, shop);
       },
     })
