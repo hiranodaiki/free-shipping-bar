@@ -15,6 +15,7 @@ import RoutePropagator from "@/components/RoutePropagator";
 import { useRouter } from "next/router";
 import { getSubscriptionUrl } from "@/lib/mutations/get-subscription-url";
 import { getSubscriptionStatus } from "@/lib/querys/get-subscription-status";
+import { getShopPlanStatus } from "@/lib/querys/get-shop-plan";
 import { useState } from "react";
 
 function userLoggedInFetch(app) {
@@ -39,10 +40,6 @@ function userLoggedInFetch(app) {
   };
 }
 
-// サブスクリプションのstatusを取得するためのクエリ
-
-// 定期購読を作成するためのミューテーション(get-subscription-url.jsと一致させること)
-
 function MyProvider(props) {
   const app = useAppBridge();
   const router = useRouter();
@@ -57,24 +54,33 @@ function MyProvider(props) {
     },
   });
 
-  getSubscriptionStatus(client).then((subscriptionStatus) => {
-    if (subscriptionStatus) {
-      setIsSubscriptionStatusActive(subscriptionStatus);
+  getShopPlanStatus(client).then((isDevelopmentStore) => {
+    if (isDevelopmentStore) {
+      //開発ストアである場合
+      //請求画面へリダイレクトせずに、アプリ管理画面にリダイレクト
+      setIsSubscriptionStatusActive(true);
       return;
     }
-    getSubscriptionUrl(client, router.query.shop, router.query.host).then(
-      (confirmationUrl) => {
-        const redirect = Redirect.create(app);
-        redirect.dispatch(Redirect.Action.REMOTE, confirmationUrl);
+    //請求画面へのリダイレクト
+    getSubscriptionStatus(client).then((subscriptionStatus) => {
+      if (subscriptionStatus) {
+        setIsSubscriptionStatusActive(subscriptionStatus);
+        return;
       }
-    );
+      getSubscriptionUrl(client, router.query.shop, router.query.host).then(
+        (confirmationUrl) => {
+          const redirect = Redirect.create(app);
+          redirect.dispatch(Redirect.Action.REMOTE, confirmationUrl);
+        }
+      );
+    });
   });
 
   const Component = props.Component;
 
   return (
     <ApolloProvider client={client}>
-      {isSubscriptionStateActive&&<Component {...props} />}
+      {isSubscriptionStateActive && <Component {...props} />}
     </ApolloProvider>
   );
 }
