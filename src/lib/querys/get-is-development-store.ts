@@ -12,9 +12,9 @@ const GET_STORE_PLAN_NAME = gql`
   }
 `;
 
-type GetShopPlanStatus = (client: ApolloClient<any>) => Promise<boolean>;
+type GetIsDevelopmentStore = (client: ApolloClient<any>) => Promise<boolean>;
 
-export const getShopPlanStatus: GetShopPlanStatus = async (client) => {
+export const getIsDevelopmentStore: GetIsDevelopmentStore = async (client) => {
   const isDevelopmentStore = await client
     .query({ query: GET_STORE_PLAN_NAME })
     .then((response) => {

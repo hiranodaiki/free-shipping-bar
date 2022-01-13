@@ -14,8 +14,8 @@ import RoutePropagator from "@/components/layout/RoutePropagator";
 // 請求が完了していない時に、請求画面にリダイレクトするための実装に必要なモジュール
 import { useRouter } from "next/router";
 import { getSubscriptionUrl } from "@/lib/mutations/get-subscription-url";
-import { getSubscriptionStatus } from "@/lib/querys/get-subscription-status";
-import { getShopPlanStatus } from "@/lib/querys/get-shop-plan";
+import { getIsDevelopmentStore } from "@/lib/querys/get-is-development-store";
+import { getIsSubscriptionStatusActive } from "@/lib/querys/get-is-subscription-status-active";
 import { useState } from "react";
 // recoilを導入
 import { RecoilRoot } from "recoil";
@@ -56,7 +56,7 @@ function MyProvider(props) {
     },
   });
 
-  getShopPlanStatus(client).then((isDevelopmentStore) => {
+  getIsDevelopmentStore(client).then((isDevelopmentStore) => {
     if (isDevelopmentStore) {
       //開発ストアである場合
       //請求画面へリダイレクトせずに、アプリ管理画面にリダイレクト
@@ -64,9 +64,9 @@ function MyProvider(props) {
       return;
     }
     //請求画面へのリダイレクト
-    getSubscriptionStatus(client).then((subscriptionStatus) => {
-      if (subscriptionStatus) {
-        setIsSubscriptionStatusActive(subscriptionStatus);
+    getIsSubscriptionStatusActive(client).then((isSubscriptionStatusActive) => {
+      if (isSubscriptionStatusActive) {
+        setIsSubscriptionStatusActive(isSubscriptionStatusActive);
         return;
       }
       getSubscriptionUrl(client, router.query.shop, router.query.host).then(

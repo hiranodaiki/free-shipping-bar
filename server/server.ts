@@ -7,19 +7,23 @@ import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
 // 請求画面にリダイレクトするために必要なモジュール
-import { createClient, getSubscriptionUrl , getShopPlanStatus } from "./handlers/index";
+import {
+  createClient,
+  getSubscriptionUrl,
+  getIsDevelopmentStore,
+} from "./handlers/index";
 import { receiveWebhook } from "@shopify/koa-shopify-webhooks";
 
 // ACTIVE_SHOPIFY_SHOPSのための型を定義する
 type ActiveShopifyShops = {
   [key: string]: string;
-}
+};
 
 type KoaDefaultContext = {
-  shop: string
-  accessToken: string
-  scope: string
-}
+  shop: string;
+  accessToken: string;
+  scope: string;
+};
 
 dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 8081;
@@ -55,7 +59,11 @@ app.prepare().then(async () => {
     createShopifyAuth({
       async afterAuth(ctx) {
         // Access token and shop available in ctx.state.shopify
-        const { shop, accessToken, scope }: KoaDefaultContext = ctx.state.shopify;
+        const {
+          shop,
+          accessToken,
+          scope,
+        }: KoaDefaultContext = ctx.state.shopify;
         const host = ctx.query.host;
         ACTIVE_SHOPIFY_SHOPS[shop] = scope;
 
@@ -75,16 +83,15 @@ app.prepare().then(async () => {
           );
         }
 
-        
         // Redirect to app with shop parameter upon auth
-        
+
         server.context.client = createClient(shop, accessToken);
-        const isDevelopmentStore = await getShopPlanStatus(ctx);
-        
+        const isDevelopmentStore = await getIsDevelopmentStore(ctx);
+
         // 開発ストアである場合、請求画面にリダイレクトしない
         if (isDevelopmentStore) {
           ctx.redirect(`/?shop=${shop}&host=${host}`);
-          return
+          return;
         }
         // 請求画面にリダイレクト
         await getSubscriptionUrl(ctx, host, shop);

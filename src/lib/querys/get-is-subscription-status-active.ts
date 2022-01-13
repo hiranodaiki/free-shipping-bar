@@ -16,9 +16,9 @@ const GET_SUBSCRIPTION_STATUS = gql`
   }
 `;
 
-type GetSubscriptionStatus = (client: ApolloClient<any>) => Promise<boolean>;
+type GetIsSubscriptionStatusActive = (client: ApolloClient<any>) => Promise<boolean>;
 
-export const getSubscriptionStatus: GetSubscriptionStatus = async (client) => {
+export const getIsSubscriptionStatusActive: GetIsSubscriptionStatusActive = async (client) => {
   const isSubscriptionStatusActive = await client
     .query({ query: GET_SUBSCRIPTION_STATUS })
     .then((response) => {
