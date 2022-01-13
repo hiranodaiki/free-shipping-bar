@@ -13,9 +13,9 @@ const GET_STORE_PLAN_NAME = gql`
   }
 `;
 
-type GetShopPlanStatus = (ctx: Koa.Context) => Promise<boolean>;
+type GetIsDevelopmentStore = (ctx: Koa.Context) => Promise<boolean>;
 
-export const getShopPlanStatus: GetShopPlanStatus = async (ctx) => {
+export const getIsDevelopmentStore: GetIsDevelopmentStore = async (ctx) => {
   const { client } = ctx;
   const isDevelopmentStore = await client
     .query({ query: GET_STORE_PLAN_NAME })

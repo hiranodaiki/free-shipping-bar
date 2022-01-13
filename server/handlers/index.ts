@@ -1,6 +1,11 @@
 import { createClient } from "./client";
 import { getSubscriptionUrl } from "./mutations/get-subscription-url";
-import { getShopPlanStatus } from "./querys/get-shop-plan";
+import { getIsDevelopmentStore } from "./querys/get-is-development-store";
 import { getOneTimeUrl } from "./mutations/get-one-time-url";
 
-export { createClient, getOneTimeUrl, getSubscriptionUrl, getShopPlanStatus };
+export {
+  createClient,
+  getOneTimeUrl,
+  getSubscriptionUrl,
+  getIsDevelopmentStore,
+};
