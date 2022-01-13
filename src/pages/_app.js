@@ -10,13 +10,15 @@ import translations from "@shopify/polaris/locales/en.json";
 // tailwindcssのスタイルを展開
 import "@/style/style.css";
 // アプリ管理画面のルーティング周りの設定用の自作モジュール
-import RoutePropagator from "@/components/RoutePropagator";
+import RoutePropagator from "@/components/layout/RoutePropagator";
 // 請求が完了していない時に、請求画面にリダイレクトするための実装に必要なモジュール
 import { useRouter } from "next/router";
 import { getSubscriptionUrl } from "@/lib/mutations/get-subscription-url";
 import { getSubscriptionStatus } from "@/lib/querys/get-subscription-status";
 import { getShopPlanStatus } from "@/lib/querys/get-shop-plan";
 import { useState } from "react";
+// recoilを導入
+import { RecoilRoot } from "recoil";
 
 function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
@@ -80,7 +82,9 @@ function MyProvider(props) {
 
   return (
     <ApolloProvider client={client}>
-      {isSubscriptionStateActive && <Component {...props} />}
+      <RecoilRoot>
+        {isSubscriptionStateActive && <Component {...props} />}
+      </RecoilRoot>
     </ApolloProvider>
   );
 }
