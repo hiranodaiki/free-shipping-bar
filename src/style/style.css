@@ -4,3 +4,22 @@
 @tailwind components;
 /* tailwindのユーティリティークラスとプラグインによって登録されたユーティリティークラスを挿入する */
 @tailwind utilities;
+
+// porarisのスタイルを上書き
+@media (min-width: 48.0625em) {
+  .Polaris-Frame__Skip {
+    display: none;
+  }
+
+  .Polaris-Frame__TopBar {
+    display: none;
+  }
+
+  .Polaris-Frame--hasTopBar .Polaris-Frame__Main {
+    padding-top: 0rem;
+  }
+
+  .Polaris-Frame--hasTopBar .Polaris-Frame__Navigation {
+    top: 0;
+  }
+} 
