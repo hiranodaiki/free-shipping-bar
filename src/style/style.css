@@ -5,7 +5,6 @@
 /* tailwindのユーティリティークラスとプラグインによって登録されたユーティリティークラスを挿入する */
 @tailwind utilities;
 
-// porarisのスタイルを上書き
 @media (min-width: 48.0625em) {
   .Polaris-Frame__Skip {
     display: none;
