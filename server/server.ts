@@ -8,18 +8,6 @@ import next from "next";
 import Router from "koa-router";
 import { receiveWebhook } from "@shopify/koa-shopify-webhooks";
 
-// require("@babel/polyfill");
-// const dotenv = require("@babel/polyfill");
-// require("isomorphic-fetch");
-// const Shopify = require("@shopify/shopify-api");
-// const ApiVersion = require("@shopify/shopify-api");
-// const createShopifyAuth = require("@shopify/koa-shopify-auth");
-// const verifyRequest = require("@shopify/koa-shopify-auth");
-// const Koa = require("koa");
-// const next = require("next");
-// const Router = require("koa-router");
-// const receiveWebhook = require("@shopify/koa-shopify-webhooks");
-
 // ACTIVE_SHOPIFY_SHOPSのための型を定義する
 type ActiveShopifyShops = {
   [key: string]: string;
