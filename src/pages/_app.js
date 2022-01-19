@@ -20,6 +20,8 @@ import { getIsSubscriptionStatusActive } from "@/lib/querys/get-is-subscription-
 import { useState } from "react";
 // recoilを導入
 import { RecoilRoot } from "recoil";
+// GraphQLのエラーが発生した時の対処
+import GraphQLExceptionError from "@/components/uiGroup/GraphQLExceptionError";
 
 function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
@@ -46,9 +48,10 @@ function userLoggedInFetch(app) {
 function MyProvider(props) {
   const app = useAppBridge();
   const router = useRouter();
-  const [isSubscriptionStateActive, setIsSubscriptionStatusActive] = useState(
+  const [isSubscriptionStatusActive, setIsSubscriptionStatusActive] = useState(
     false
   );
+  const [isGraphQLErrorOccurred, setIsGraphQLErrorOccurred] = useState(false); // アプリのインストール権限のないものがアプリにアクセスした場合に、発生する例外状態を管理state
 
   const client = new ApolloClient({
     fetch: userLoggedInFetch(app),
@@ -70,12 +73,16 @@ function MyProvider(props) {
         setIsSubscriptionStatusActive(isSubscriptionStatusActive);
         return;
       }
-      getSubscriptionUrl(client, router.query.shop, router.query.host).then(
-        (confirmationUrl) => {
-          const redirect = Redirect.create(app);
-          redirect.dispatch(Redirect.Action.REMOTE, confirmationUrl);
-        }
-      );
+      if (isSubscriptionStatusActive != undefined) {
+        getSubscriptionUrl(client, router.query.shop, router.query.host).then(
+          (confirmationUrl) => {
+            const redirect = Redirect.create(app);
+            redirect.dispatch(Redirect.Action.REMOTE, confirmationUrl);
+          }
+        );
+      } else {
+        setIsGraphQLErrorOccurred(true); // 例外の発生
+      }
     });
   });
 
@@ -84,7 +91,11 @@ function MyProvider(props) {
   return (
     <ApolloProvider client={client}>
       <RecoilRoot>
-        {isSubscriptionStateActive && <Component {...props} />}
+        {isGraphQLErrorOccurred ? (
+          <GraphQLExceptionError shop={router.query.shop} />
+        ) : (
+          isSubscriptionStatusActive && <Component {...props} />
+        )}
       </RecoilRoot>
     </ApolloProvider>
   );

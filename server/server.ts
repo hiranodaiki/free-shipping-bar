@@ -6,13 +6,19 @@ import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
-// 請求画面にリダイレクトするために必要なモジュール
-import {
-  createClient,
-  getSubscriptionUrl,
-  getIsDevelopmentStore,
-} from "./handlers/index";
 import { receiveWebhook } from "@shopify/koa-shopify-webhooks";
+
+// require("@babel/polyfill");
+// const dotenv = require("@babel/polyfill");
+// require("isomorphic-fetch");
+// const Shopify = require("@shopify/shopify-api");
+// const ApiVersion = require("@shopify/shopify-api");
+// const createShopifyAuth = require("@shopify/koa-shopify-auth");
+// const verifyRequest = require("@shopify/koa-shopify-auth");
+// const Koa = require("koa");
+// const next = require("next");
+// const Router = require("koa-router");
+// const receiveWebhook = require("@shopify/koa-shopify-webhooks");
 
 // ACTIVE_SHOPIFY_SHOPSのための型を定義する
 type ActiveShopifyShops = {
@@ -84,17 +90,7 @@ app.prepare().then(async () => {
         }
 
         // Redirect to app with shop parameter upon auth
-
-        server.context.client = createClient(shop, accessToken);
-        const isDevelopmentStore = await getIsDevelopmentStore(ctx);
-
-        // 開発ストアである場合、請求画面にリダイレクトしない
-        if (isDevelopmentStore) {
-          ctx.redirect(`/?shop=${shop}&host=${host}`);
-          return;
-        }
-        // 請求画面にリダイレクト
-        await getSubscriptionUrl(ctx, host, shop);
+        ctx.redirect(`/?shop=${shop}&host=${host}`);
       },
     })
   );
